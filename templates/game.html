@@ -1,0 +1,54 @@
+<h1> Interactive Fiction </h1>
+{% load static %}
+<style>
+    @font-face { font-family: ARCADE; src: url("{% static 'game/ARCADE.TTF' %}"); } 
+    input{
+        background-color: #101010;
+        color: #ffffff;
+        border: none;
+        outline: none;
+        font-family: ARCADE;
+        font-size: 30px;
+    }
+    body{
+        background-color: #101010;
+        color: #ffffff;
+        font-family: ARCADE;
+        font-size: 30px;
+    }
+
+    img{
+        max-width: 100%;
+        height: auto;
+    }
+
+    .row {
+        display: flex;
+        padding-right: 50px;
+        padding-left: 50px;
+    }
+
+    .column {
+        flex: 50%;
+        height:800px;
+        overflow-wrap: break-word;
+        overflow-y:auto;
+    }
+</style>
+
+<body>
+    <div class="row">
+        <div class="column">
+            <p style="white-space: pre-wrap;">{{narration}}</p>
+            <form method="POST" action="">
+                {% csrf_token %}
+                > <input autofocus type="text" name="command">
+                <input type="submit" style="display: none" />
+            </form>
+        </div>
+        <div class="column">
+            <img src="{% static location %}" />
+        </div>
+    </div>
+
+</body>
