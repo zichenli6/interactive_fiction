@@ -1,5 +1,6 @@
 <h1> Interactive Fiction </h1>
 {% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'game/style.css' %}">
 <style>
     @font-face { font-family: ARCADE; src: url("{% static 'game/ARCADE.TTF' %}"); } 
     input{
@@ -48,6 +49,7 @@
         </div>
         <div class="column">
             <img src="{% static location %}" />
+            {% include 'chat.html' %}
         </div>
     </div>
 

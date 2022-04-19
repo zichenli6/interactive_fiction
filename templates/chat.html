@@ -1,0 +1,71 @@
+<script>
+    // Content Loaded
+    window.addEventListener("DOMContentLoaded", (e) => {
+    var header = document.querySelector(".header");
+    var chatRoom = document.querySelector(".chat-room");
+    var typeArea = document.querySelector(".type-area");
+    var inputText = document.querySelector("#inputText");
+    var btnSend = document.querySelector(".button-send");
+    var messageArea=document.querySelector(".message.message-right");
+    // Header onclick event
+    header.addEventListener("click", (e) => {
+        if (typeArea.classList.contains("d-none")) {
+        header.style.borderRadius = "20px 20px 0 0";
+        } else {
+        header.style.borderRadius = "20px";
+        }
+        typeArea.classList.toggle("d-none");
+        chatRoom.classList.toggle("d-none");
+    });
+    // Button Send onclick event
+    btnSend.addEventListener("click", (e) => {
+        var mess = inputText.value;
+        var bubble = document.createElement('div');
+        bubble.className += " bubble bubble-dark";
+        bubble.textContent = mess;
+        messageArea.appendChild(bubble);
+        inputText.value="";
+    });
+    });
+</script>
+
+{% for i in '012'|make_list %}
+<div class="chat-box">
+    <div class="header">
+      <div class="avatar-wrapper avatar-big">
+        <img src="https://znews-photo.zadn.vn/w660/Uploaded/pnbcuhbatgunb/2020_03_23/i13863960814_1.jpg" alt="avatar" />
+      </div>
+      <span class="name">Crush</span>
+      <span class="options">
+        <i class="fas fa-ellipsis-h"></i>
+      </span>
+    </div>
+    <div class="chat-room">
+      <div class="message message-left">
+        <div class="avatar-wrapper avatar-small">
+          <img src="https://znews-photo.zadn.vn/w660/Uploaded/pnbcuhbatgunb/2020_03_23/i13863960814_1.jpg" alt="avatar" />
+        </div>
+        <div class="bubble bubble-light">
+          Hey anhat!
+        </div>
+      </div>
+      <div class="message message-right">
+        <div class="avatar-wrapper avatar-small">
+          <img src="https://scontent-xsp1-1.xx.fbcdn.net/v/t1.0-9/s960x960/87853049_2481558942096235_8369025410146500608_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=0dU4W6nYBk0AX-ZHz-P&_nc_ht=scontent-xsp1-1.xx&_nc_tp=7&oh=20d12357dd09465c5ed2526555651580&oe=5EA2FF44" alt="avatar" />
+        </div>
+        <div class="bubble bubble-dark">
+          what is going on?
+        </div>
+      </div>
+    </div>
+    <div class="type-area">
+      <div class="input-wrapper">
+        <form method="POST" action="#inputText">
+            {% csrf_token %}
+            <input type="text" id="inputText" placeholder="Type messages here..." />
+        </form>
+      </div>
+      <button class="button-send">Send</button>
+    </div>  
+</div>
+{% endfor %}
