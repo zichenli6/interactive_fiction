@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+import time
 
 from .game import *
 
@@ -18,10 +19,22 @@ def parse_command(request):
             command = request.POST["command"]
             end_game, narration = parser.parse_command(command)
             narration_history += narration + "\n"
+        elif "message" in request.POST:
+            print(request.POST["message"])
+            time.sleep(2)
+        
 
     context = {
         "narration": narration_history,
-        "location": "game/" + parser.game.curr_location.name.lower().replace(" ", "_") + ".png"
+        "location": "game/" + parser.game.curr_location.name.lower().replace(" ", "_") + ".png",
+        "characters": [
+            {
+                "name": "Zach Li",
+                "convo_subject" : ["hello", "how are you?"],
+                "convo_opp": ["hello", "good"]
+            }
+        ]
+        
     }
 
     return render(request, 'game.html', context)

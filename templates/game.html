@@ -33,7 +33,7 @@
         flex: 50%;
         height:800px;
         overflow-wrap: break-word;
-        overflow-y:auto;
+        /* overflow-y:auto; */
     }
 </style>
 
@@ -43,7 +43,7 @@
             <p style="white-space: pre-wrap;">{{narration}}</p>
             <form method="POST" action="">
                 {% csrf_token %}
-                > <input autofocus type="text" name="command">
+                > <input autofocus type="text" id="commandInput" name="command">
                 <input type="submit" style="display: none" />
             </form>
         </div>

@@ -1,35 +1,60 @@
 <script>
+
+    document.addEventListener("DOMContentLoaded", function(event) { 
+        var scrollpos = localStorage.getItem('scrollpos');
+        if (scrollpos) window.scrollTo(0, scrollpos);
+    });
+
+    window.onbeforeunload = function(e) {
+        localStorage.setItem('scrollpos', window.scrollY);
+    };
+
     // Content Loaded
     window.addEventListener("DOMContentLoaded", (e) => {
-    var header = document.querySelector(".header");
-    var chatRoom = document.querySelector(".chat-room");
-    var typeArea = document.querySelector(".type-area");
-    var inputText = document.querySelector("#inputText");
-    var btnSend = document.querySelector(".button-send");
-    var messageArea=document.querySelector(".message.message-right");
-    // Header onclick event
-    header.addEventListener("click", (e) => {
-        if (typeArea.classList.contains("d-none")) {
-        header.style.borderRadius = "20px 20px 0 0";
-        } else {
-        header.style.borderRadius = "20px";
+        var headers = document.querySelectorAll(".header");
+        var chatRooms = document.querySelectorAll(".chat-room");
+        var typeAreas = document.querySelectorAll(".type-area");
+        var inputTexts = document.querySelectorAll("#inputText");
+        var btnSends = document.querySelectorAll(".button-send");
+        var messageForms = document.querySelectorAll(".message-form");
+        var messageAreas = document.querySelectorAll(".message.message-right");
+
+        // Header onclick event
+        for (let i = 0; i < typeAreas.length; ++i){
+            headers[i].addEventListener("click", (e) => {
+                if (typeAreas[i].classList.contains("d-none")) {
+                    headers[i].style.borderRadius = "20px 20px 0 0";
+                } 
+                else {
+                    headers[i].style.borderRadius = "20px";
+                }
+                typeAreas[i].classList.toggle("d-none");
+                chatRooms[i].classList.toggle("d-none");
+            });
         }
-        typeArea.classList.toggle("d-none");
-        chatRoom.classList.toggle("d-none");
-    });
-    // Button Send onclick event
-    btnSend.addEventListener("click", (e) => {
-        var mess = inputText.value;
-        var bubble = document.createElement('div');
-        bubble.className += " bubble bubble-dark";
-        bubble.textContent = mess;
-        messageArea.appendChild(bubble);
-        inputText.value="";
-    });
+
+        // Button Send onclick event
+        for (let i = 0; i < btnSends.length; ++i){
+            btnSends[i].addEventListener("click", (e) => {
+                messageForms[i].submit()
+            });
+        }
+
+        // Form submit event
+        for (let i = 0; i < messageForms.length; ++i){
+            messageForms[i].addEventListener("submit", (e) => {
+                var mess = inputTexts[i].value;
+                var bubble = document.createElement('div');
+                bubble.className += " bubble bubble-dark";
+                bubble.textContent = mess;
+                messageAreas[i].appendChild(bubble);
+                inputTexts[i].value="";
+            });
+        }
     });
 </script>
 
-{% for i in '012'|make_list %}
+{% for i in '01'|make_list %}
 <div class="chat-box">
     <div class="header">
       <div class="avatar-wrapper avatar-big">
@@ -51,7 +76,7 @@
       </div>
       <div class="message message-right">
         <div class="avatar-wrapper avatar-small">
-          <img src="https://scontent-xsp1-1.xx.fbcdn.net/v/t1.0-9/s960x960/87853049_2481558942096235_8369025410146500608_o.jpg?_nc_cat=110&_nc_sid=09cbfe&_nc_ohc=0dU4W6nYBk0AX-ZHz-P&_nc_ht=scontent-xsp1-1.xx&_nc_tp=7&oh=20d12357dd09465c5ed2526555651580&oe=5EA2FF44" alt="avatar" />
+          <img src="https://znews-photo.zadn.vn/w660/Uploaded/pnbcuhbatgunb/2020_03_23/i13863960814_1.jpg" alt="avatar" />
         </div>
         <div class="bubble bubble-dark">
           what is going on?
@@ -60,12 +85,12 @@
     </div>
     <div class="type-area">
       <div class="input-wrapper">
-        <form method="POST" action="#inputText">
+        <form class="message-form" method="POST" action="">
             {% csrf_token %}
-            <input type="text" id="inputText" placeholder="Type messages here..." />
+            <input autofocus type="text" id="inputText" name="message" placeholder="Type messages here..." />
         </form>
       </div>
       <button class="button-send">Send</button>
-    </div>  
+    </div>
 </div>
 {% endfor %}
