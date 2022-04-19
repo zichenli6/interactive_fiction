@@ -32,14 +32,17 @@ img {
     overflow: hidden;
 }
 .dialogues {
+    padding-top: 50px;
     text-align: center;
 }
+
 .chat-box {
-    width: 300px;
+    width: 350px;
     margin: auto;
     color: black;
     font-family: "Sen", sans-serif;
     padding: 10px;
+    vertical-align: top;
     display: inline-block;
 }
 
