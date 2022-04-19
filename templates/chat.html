@@ -1,5 +1,4 @@
 <script>
-
     document.addEventListener("DOMContentLoaded", function(event) { 
         var scrollpos = localStorage.getItem('scrollpos');
         if (scrollpos) window.scrollTo(0, scrollpos);
@@ -43,54 +42,64 @@
         // Form submit event
         for (let i = 0; i < messageForms.length; ++i){
             messageForms[i].addEventListener("submit", (e) => {
-                var mess = inputTexts[i].value;
-                var bubble = document.createElement('div');
-                bubble.className += " bubble bubble-dark";
-                bubble.textContent = mess;
-                messageAreas[i].appendChild(bubble);
-                inputTexts[i].value="";
+                messageForms[i].submit()
+                // var mess = inputTexts[i].value;
+                // var bubble = document.createElement('div');
+                // bubble.className += " bubble bubble-dark";
+                // bubble.textContent = mess;
+                // messageAreas[i].appendChild(bubble);
+                // inputTexts[i].value="";
             });
         }
     });
 </script>
+{% load static %}
 
-{% for i in '01'|make_list %}
-<div class="chat-box">
-    <div class="header">
-      <div class="avatar-wrapper avatar-big">
-        <img src="https://znews-photo.zadn.vn/w660/Uploaded/pnbcuhbatgunb/2020_03_23/i13863960814_1.jpg" alt="avatar" />
-      </div>
-      <span class="name">Crush</span>
-      <span class="options">
-        <i class="fas fa-ellipsis-h"></i>
-      </span>
+<div class="dialogues">
+    {% for character in characters %}
+    <div class="chat-box">
+        <div class="header">
+        <div class="avatar-wrapper avatar-big">
+            <img src="{% static character.headshot %}" alt="avatar" />
+        </div>
+        <span class="name">{{character.name}}</span>
+        <span class="options">
+            <i class="fas fa-ellipsis-h"></i>
+        </span>
+        </div>
+        <div class="chat-room">
+        {% for dialogue in character.dialogues %}
+            {% if forloop.counter|divisibleby:2 %}
+                <div class="message message-left">
+                    <div class="avatar-wrapper avatar-small">
+                    <img src="{% static character.headshot %}" alt="avatar" />
+                    </div>
+                    <div class="bubble bubble-light">
+                    {{ dialogue }}
+                    </div>
+                </div>
+            {% else %}
+                <div class="message message-right">
+                    <div class="avatar-wrapper avatar-small">
+                    <img src="{% static '/game/profile.png' %}" alt="avatar" />
+                    </div>
+                    <div class="bubble bubble-dark">
+                    {{ dialogue }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        <div class="type-area">
+        <div class="input-wrapper">
+            <form class="message-form" method="POST" action="">
+                {% csrf_token %}
+                <input autofocus type="text" id="inputText" name="message" placeholder="Type messages here..." />
+                <input type="hidden" name="characterId" value="{{forloop.counter}}"/>
+            </form>
+        </div>
+        <button class="button-send">Send</button>
+        </div>
     </div>
-    <div class="chat-room">
-      <div class="message message-left">
-        <div class="avatar-wrapper avatar-small">
-          <img src="https://znews-photo.zadn.vn/w660/Uploaded/pnbcuhbatgunb/2020_03_23/i13863960814_1.jpg" alt="avatar" />
-        </div>
-        <div class="bubble bubble-light">
-          Hey anhat!
-        </div>
-      </div>
-      <div class="message message-right">
-        <div class="avatar-wrapper avatar-small">
-          <img src="https://znews-photo.zadn.vn/w660/Uploaded/pnbcuhbatgunb/2020_03_23/i13863960814_1.jpg" alt="avatar" />
-        </div>
-        <div class="bubble bubble-dark">
-          what is going on?
-        </div>
-      </div>
-    </div>
-    <div class="type-area">
-      <div class="input-wrapper">
-        <form class="message-form" method="POST" action="">
-            {% csrf_token %}
-            <input autofocus type="text" id="inputText" name="message" placeholder="Type messages here..." />
-        </form>
-      </div>
-      <button class="button-send">Send</button>
-    </div>
+    {% endfor %}
 </div>
-{% endfor %}

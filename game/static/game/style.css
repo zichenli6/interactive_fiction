@@ -31,21 +31,26 @@ img {
     border-radius: 50%;
     overflow: hidden;
 }
+.dialogues {
+    text-align: center;
+}
 .chat-box {
-    width: 350px;
-    /* margin: auto; */
+    width: 300px;
+    margin: auto;
     color: black;
     font-family: "Sen", sans-serif;
     padding: 10px;
+    display: inline-block;
 }
 
 .chat-box .header {
     display: flex;
     align-items: center;
     background-color: #fff;
-    border-radius: 20px;
+    border-radius: 20px 20px 0 0;
     padding: 15px;
 }
+
 .chat-box .header .avatar-big {
     width: 35px;
     height: 35px;
@@ -62,9 +67,11 @@ img {
     cursor: pointer;
 }
 .chat-box .chat-room {
-    min-height: 300px;
     background-color: #f7f9fb;
     padding: 15px;
+    height: 350px;
+    overflow-wrap: break-word;
+    overflow-y: auto;
 }
 .chat-box .chat-room .avatar-small {
     width: 25px;
@@ -79,12 +86,14 @@ img {
     align-items: flex-start;
 }
 .chat-box .chat-room .message-left .bubble {
+    text-align: left;
     border-radius: 0 5px 5px 5px;
 }
 .chat-box .chat-room .message-right {
     align-items: flex-end;
 }
 .chat-box .chat-room .message-right .bubble {
+    text-align: right;
     border-radius: 5px 0 5px 5px;
 }
 .chat-box .chat-room .bubble {

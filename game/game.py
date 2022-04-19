@@ -69,6 +69,8 @@ class Game:
         if len(self.curr_location.items) > 0:
             for item_name in self.curr_location.items:
                 item = self.curr_location.items[item_name]
+                if item.properties["character"]:
+                    continue
                 if len(item.get_commands()) > 0:
                     items.append(item.description + "\n\t" + ", ".join(item.get_commands()))
                 else:
@@ -76,6 +78,21 @@ class Game:
         if len(items) > 0:
             narration = "You see:\n" + "".join(items)
         return narration
+
+    def get_current_characters(self):
+        characters = []
+        if len(self.curr_location.items) > 0:
+            for item_name in self.curr_location.items:
+                character = self.curr_location.items[item_name]
+                if not character.properties["character"]:
+                    continue
+                characters.append({
+                    "name": character.name,
+                    "headshot": "game/" + character.name.lower().replace(" ", "_") + ".png",
+                    "persona": character.description,
+                    "dialogues": []
+                })
+        return characters
 
     def add_to_inventory(self, item):
         """
@@ -251,17 +268,24 @@ class Item:
                  examine_text="",
                  take_text="",
                  start_at=None,
-                 gettable=True):
+                 gettable=True,
+                 character=False):
+
         # The name of the object
         self.name = name
+        
         # The default description of the object.
         self.description = description
+
         # The detailed description of the player examines the object.
         self.examine_text = examine_text
+
         # Text that displays when player takes an object.
         self.take_text = take_text if take_text else ("You take the %s." % self.name)
         self.properties = defaultdict(bool)
         self.properties["gettable"] = gettable
+        self.properties["character"] = character
+
         # The location in the Game where the object starts.
         if start_at:
             start_at.add_item(name, self)
@@ -380,7 +404,13 @@ class Parser:
         if self.game.curr_location.stay_time > 3 and not self.game.curr_location.is_lingerable:
             end_game = True
             narration += "You have stayed here for too long."
-        return end_game, narration
+
+        # Query current characters at location
+        characters = None
+        if intent == "direction":
+            characters = self.game.get_current_characters()
+
+        return narration, characters
 
     ### Intent Functions ###
     def go_in_direction(self, command):
@@ -642,18 +672,6 @@ def create_item(game, *args):
     print(create_text)
     return False
 
-def eat_fish(game, *args):
-    """Try to eat the fish."""
-    (action_description) = args[0]
-    print(action_description)
-    return False
-
-def drive_off_troll(game, *args):
-    """Drive off the troll by feeding it fish."""
-    (action_description) = args[0]
-    print(action_description)
-    return False
-
 def perform_multiple_actions(game, *args):
     """perform multiple actions."""
     (multiple_actions) = args[0]
@@ -661,65 +679,6 @@ def perform_multiple_actions(game, *args):
     for action, arguments in multiple_actions:
         is_end = is_end or action(game, arguments)
     return is_end
-
-def give_rose_to_princess(game, *args):
-    """give rose to princess."""
-    (reaction_text) = args[0]
-    print(reaction_text)
-    return False
-
-def kiss_princess(game, *args):
-    """try to kiss the princess ."""
-    (refuse_text, kiss_text, is_married) = args[0]
-    if is_married:
-        print(kiss_text)
-    else:
-        print(refuse_text)
-    return False
-
-def be_rude_to_princess(game, *args):
-    """be rude to princess."""
-    (reaction_text) = args[0]
-    print(reaction_text)
-    return False
-
-def talk_to_princess(game, *args):
-    """talk to princess."""
-    (conversation_text) = args[0]
-    print(conversation_text)
-    return False
-
-def marry_princess(game, *args):
-    """marry princess."""
-    (princess, accepct_text) = args[0]
-    print(accepct_text)
-    princess.properties["married"] = True
-    game.properties["married"] = True
-    return False
-
-def decipher_runes(game, *args):
-    """decipher runes."""
-    (clue_text) = args[0]
-    print(clue_text)
-    return False
-
-def add_special_event_score(game, *args):
-    """add special event score"""
-    (score) = args[0]
-    game.special_event_score = game.special_event_score + score
-    return False
-
-def add_defeat_enemy_score(game, *args):
-    """add defeat enemy score"""
-    (score) = args[0]
-    game.defeat_enemy_score = min(game.defeat_enemy_score + score, game.defeat_enemy_score_max)
-    return False
-
-def end_game(game, *args):
-    """Ends the game."""
-    end_message = args[0]
-    print(end_message)
-    return True
 
 
 def build_game():
@@ -783,135 +742,11 @@ def build_game():
     runes = Item("runes", "strange runes.", "The runes seem to be a spell of exorcism", start_at=great_feasting_hall, gettable=False)
     throne = Item("throne", "an ornate golden throne.", start_at=throne_room, gettable=False)
 
-    # Add special functions to your items
-    rosebush.add_action("pick rose", perform_multiple_actions, 
-        ([
-            (add_item_to_inventory, (rose, "You pick the lone rose from the rosebush.", "You already picked the rose."))
-        ]),
-        preconditions={"in_location": garden_path}
-    )
-    rose.add_action("smell rose", describe_something, ("It smells sweet."))
-    pond.add_action("catch fish", describe_something, ("You reach into the pond and try to catch a fish with your hands, but they are too fast."))
-    pond.add_action("catch fish with pole", perform_multiple_actions, 
-        ([
-            (add_item_to_inventory, (fish, "You dip your hook into the pond and catch a fish.","You weren't able to catch another fish."))
-        ]),
-        preconditions={"inventory_contains":fishing_pole, "in_location": fishing_pond}
-    )
-    fish.add_action("eat fish", eat_fish, ("The fish is raw and cannot be eaten."), preconditions={"inventory_contains": fish})
-    tree.add_action("jump down", end_game, ("It's suicide."), preconditions={"inventory_contains": fish})
-    troll.add_action("attack", end_game, ("The player is killed by the troll. THE END."))
-    troll.add_action("feed troll with fish", perform_multiple_actions, 
-        ([
-            (destroy_item, (fish, "You give fish to the hungry troll.", "You already tried that.")),
-            (destroy_item, (troll,"The guard leaves because it's full.", "There is no troll")),
-            (add_defeat_enemy_score, (10)),
-        ]),
-        preconditions={"inventory_contains":fish , "location_has_item": troll}
-    )
-    guard.add_action("hit guard with branch", perform_multiple_actions, 
-        ([
-            (destroy_item, (branch, "You use your branch hit the guard. It breaks into pieces.", "")),
-            (destroy_item, (guard, "The guard is knocked out, unconscious.", "There is no guard awake")),
-            (create_item, (unconcious_guard, "", courtyard)),
-            (create_item, (key, "The key drops to the floor.", courtyard)),
-            (add_defeat_enemy_score, (10)),
-        ]),
-        preconditions={"inventory_contains":branch , "location_has_item": guard}
-    )
-    princess.add_action("give rose to princess", perform_multiple_actions, 
-        ([
-            (give_rose_to_princess, ("The rose is so beautiful, I like it!")),
-            (destroy_item, (rose, "You give rose to the princess", "You already gave rose to the princess")),
-            (add_special_event_score, (5)),
-        ]),
-        preconditions={"inventory_contains":rose , "location_has_item": princess}
-    )
-    princess.add_action("kiss princess", kiss_princess, ("Not until we're wed!", "...", princess.properties["married"]))
-    princess.add_action("be rude to princess", be_rude_to_princess, ("Pa!!! You are slapped!"))
-    princess.add_action("talk to princess", talk_to_princess, ("My father haunts the dungeon as a restless spirit.\
-                                                                \nOnly the rightful heir to the throne may wear it!\
-                                                                \nI cannot leave this tower until I am married!\
-                                                                 \nOnly the king may sit on the throne."))
-    princess.add_action("propose to princess", perform_multiple_actions, 
-        ([
-            (marry_princess, (princess, "Yes, I do!")),
-            (destroy_item, (unconcious_guard, "The guard wakes up because the new ruler arrives", "")),
-            (create_item, (kneeing_guard, "", courtyard)),
-            (destroy_item, (crown, "The princess places the crown on your head", "")),
-            (create_item, (wearing_crown, "You're wearing the crown.", None)),
-            (add_item_to_inventory, (wearing_crown, "", "")),
-        ]),
-        preconditions={"inventory_contains":crown, "princess_is_not_married": princess},
-        failure_reason="You’re not royalty!"
-    )
-    runes.add_action("decipher runes", decipher_runes, ("The runes seem to be a spell of exorcism."))
-    lamp.add_action("light lamp", perform_multiple_actions, 
-        ([
-            (destroy_item, (lamp, "You light the lamp.", "You already lit the lamp.")),
-            (add_item_to_inventory, (lighted_lamp, "", ""))
-        ]),
-        preconditions={"inventory_contains":lamp , "in_location": dungeon_stairs}
-    )
-    ghost.add_action("light candle", perform_multiple_actions, 
-        ([
-            (destroy_item, (candle, "You light the candle.", "")),
-            (destroy_item, (ghost, "What a terrible smell!", "")),
-            (create_item, (crown, "The crown drops to the ground.", dungeon)),
-            (add_defeat_enemy_score, (10)),
-        ]),
-        preconditions={"inventory_contains":candle , "location_has_item": ghost}
-    )
-    throne.add_action("sit on the throne", perform_multiple_actions, 
-        ([
-            (add_special_event_score, (5)),
-            (end_game, ("You sit on the ornate golden throne. The people cheer for the new ruler of... ACTION CASTLE!")),
-        ]),
-        preconditions={"inventory_contains": wearing_crown , "in_location": throne_room}
-    )
+    # Characters
+    harry = Item("Harry Potter", "", "", start_at=cottage, gettable=False, character=True)
+    lord_v = Item("Lord Voldemort", "", "", start_at=cottage, gettable=False, character=True)
 
-    # add special events
-    tower.special_events = [({"location_has_item": princess, "has_crown": crown}, "My father’s crown! You have put his soul at rest and may now succeed him!")]
-    courtyard.special_events = [({"location_has_item": kneeing_guard, "is_wear_crown": wearing_crown}, "The guard drops to a knee and hails his new king.")]
-    great_feasting_hall.special_events = [({"is_wear_crown": wearing_crown}, "The great feasting hall is full of revelers celebrating the new ruler of ACTION CASTLE!")]
-    throne_room.special_events = [({"is_wear_crown": wearing_crown}, "The throne room is full of courtiers and guards.")]
-
-    # places where the player cannot linger
-    drawbridge.is_lingerable = False
-    dungeon.is_lingerable = False
-    
-    # places with block
-    drawbridge.add_block("east", "there is a hungry troll in your way.", preconditions={"location_has_guard": troll})
-    courtyard.add_block("east", "there is an armed guard in your way.", preconditions={"location_has_guard": guard})
-    tower_stairs.add_block("up", "The player needs the guard’s key to access the tower.", preconditions={"inventory_contains": key})
-    dungeon_stairs.add_block("down", "The player needs light to go down.", preconditions={"inventory_contains": lighted_lamp})
-    
     # The player starts the game with a lamp in his inventory.
     game = Game(cottage)
     game.add_to_inventory(lamp)
     return game
-
-
-# def game_loop():
-#     game = build_game()
-#     parser = Parser(game)
-#     narration = game.describe()
-#     print(narration)
-
-#     command = ""
-#     while not (command.lower() == "exit" or command.lower == "q"):
-#         command = input(">")
-#         end_game, narration = parser.parse_command(command)
-#         print("n:", narration)
-#         if end_game:
-#             location_score = min(2 * len(game.visited_place), game.visited_place_score_max)
-#             item_score = min(5 * len(game.collected_items), game.collected_items_score_max)
-#             defeat_enemy_score = game.defeat_enemy_score
-#             special_event_score = game.special_event_score
-#             total_score = location_score + item_score + defeat_enemy_score + special_event_score + 1
-#             print(f"player's total score: {total_score}/100")
-#             return game
-#     return narration
-
-# game = game_loop()
-# print('THE GAME HAS ENDED.')
