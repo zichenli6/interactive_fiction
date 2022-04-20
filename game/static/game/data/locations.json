@@ -1,0 +1,74 @@
+{
+    "Diagon Alley": {
+        "connections": [
+            "Hogwarts School of Witchcraft and Wizardry",
+            "The Mirror of Erised",
+            "Gringotts Wizarding Bank",
+            "The Dursleys"
+        ],
+        "description": "Diagon Alley is a hidden wizard commerce and retail section in London.",
+        "appearance": "Diagon Alley is a hidden section of London where wizards can purchase supplies and merchandise. It is also home to Gringotts Wizarding Bank, the only bank allowed to handle magic money. The streets are cobblestone and lined with shops, including Ollivander's Wand Shop, which sells wands."
+    },
+    "Gringotts Wizarding Bank": {
+        "connections": [
+            "Hogwarts School of Witchcraft and Wizardry",
+            "Diagon Alley"
+        ],
+        "description": "Gringotts Wizarding Bank is a bank where Harry's parents left him a fortune.",
+        "appearance": "Gringotts Wizarding Bank is a large, forbidding building with a roof that is a tiled green and black. There are several large, bronze doors with ornate handles."
+    },
+    "The Hogwarts Express": {
+        "connections": [
+            "King's Cross Railway Station"
+        ],
+        "description": "The Hogwarts Express is a magical train that takes students to Hogwarts School of Witchcraft and Wizardry.",
+        "appearance": "The Hogwarts Express is a long, narrow, steam locomotive with three carriages. The first carriage is for the school's staff and the headmaster. The second carriage is for the students and the third carriage is for luggage."
+    },
+    "The Mirror of Erised": {
+        "connections": [
+            "Diagon Alley"
+        ],
+        "description": "The Mirror of Erised is a mirror that shows what the viewer most desires. It is featured in the novel \"Harry Potter and the Philosopher's Stone\". The mirror is owned by the headmaster of Hogwarts, Albus Dumbledore.",
+        "appearance": "The Mirror of Erised is a large, ornate, antique mirror that displays what the viewer most desires."
+    },
+    "Privet Drive": {
+        "connections": [
+            "The Dursleys"
+        ],
+        "description": "Privet Drive is the name of the home of Vernon and Petunia Dursley, Harry's aunt and uncle. Vernon is a mean, abusive man and Petunia is a timid woman who can't stand up to Vernon.",
+        "appearance": "The house on Privet Drive is a typical suburban home. It is a two-story house with a white exterior and a green door. The front of the house has a small porch and a green door."
+    },
+    "Hogwarts School of Witchcraft and Wizardry": {
+        "connections": [
+            "Diagon Alley",
+            "King's Cross Railway Station",
+            "Gringotts Wizarding Bank"
+        ],
+        "description": "Hogwarts School of Witchcraft and Wizardry is a magic school where students learn to cast spells and fight against evil.",
+        "appearance": "The Hogwarts School of Witchcraft and Wizardry is a grand, magical building with turrets and spires. The roof is covered in a greenish-white magical substance that sparkles in the light. The school's walls are made of a deep blue stone."
+    },
+    "Platform 9 3/4": {
+        "connections": [
+            "King's Cross Railway Station"
+        ],
+        "description": "Platform 9 3/4 is a platform on the Hogwarts Express that only allows students who are sorted into Gryffindor to board.",
+        "appearance": "Platform 9 3/4 is a hidden platform on the London King's Cross Railway Station that only appears when the conductor is carrying the Hogwarts Express. It is a small, dark, and deserted platform that is only accessible through a trapdoor."
+    },
+    "King's Cross Railway Station": {
+        "connections": [
+            "Hogwarts School of Witchcraft and Wizardry",
+            "The Hogwarts Express",
+            "Platform 9 3/4"
+        ],
+        "description": "King's Cross Railway Station is a railway station in London that serves the East London line and is the terminus of the Charing Cross branch of the London Underground.",
+        "appearance": "King's Cross Railway Station is a large, imposing building. The platform is hidden behind a curtain of ivy, and is accessible only by a secret door."
+    },
+    "The Dursleys": {
+        "connections": [
+            "Diagon Alley",
+            "Privet Drive"
+        ],
+        "description": "The Dursleys are Harry's abusive aunt and uncle, Vernon and Petunia Dursley and their bullying son, Dudley.",
+        "appearance": "Vernon and Petunia Dursley are a mean-looking couple and their son, Dudley, is a large and bullying child."
+    }
+}

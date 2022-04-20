@@ -129,6 +129,5 @@ def main():
         extract_dialogue_data(id2line, id2movie, conversations_data, characters_data, movie)
 
 
-
 if __name__ == '__main__':
     main()

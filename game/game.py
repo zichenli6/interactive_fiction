@@ -1,4 +1,7 @@
+import os
+import json
 from collections import defaultdict
+
 
 class Game:
     """
@@ -57,7 +60,7 @@ class Game:
         """
         exits = []
         for exit in self.curr_location.connections.keys():
-            exits.append(exit.capitalize())
+            exits.append(exit.title())
         return "Exits: " + ", ".join(exits)
     
     def describe_items(self):
@@ -88,8 +91,11 @@ class Game:
                     continue
                 characters.append({
                     "name": character.name,
-                    "headshot": "game/" + character.name.lower().replace(" ", "_") + ".png",
+                    "headshot": "game/characters/" + character.name_clean + ".png",
+                    "location": self.curr_location.name,
+                    "location_description": self.curr_location.description,
                     "persona": character.description,
+                    "appearance": character.examine_text,
                     "dialogues": []
                 })
         return characters
@@ -129,6 +135,8 @@ class Location:
     def __init__(self, name, description):
         # A short name for the location
         self.name = name
+        # A cleaned filename for the location
+        self.name_cleaned = name.lower().replace(" ", "_").replace("/", "_")
         # A description of the location
         self.description = description
         # The properties should contain a key "end_game" with value True
@@ -162,6 +170,10 @@ class Location:
         Gets the boolean value of this property for this item (defaults to False)
         """
         return self.properties[property_name]
+
+    def add_connections(self, directions, next_locations):
+        for direction, next_location in zip(directions, next_locations):
+            self.add_connection(direction, next_location)
 
     def add_connection(self, direction, connected_location, travel_description=""):
         """
@@ -260,19 +272,25 @@ class Location:
 class Item:
     """
     Items are objects that a player can get, or scenery
-    that a player can examine.
+    that a player can examine, or characters player can
+    interact with.
     """
-    def __init__(self,
-                 name,
-                 description,
-                 examine_text="",
-                 take_text="",
-                 start_at=None,
-                 gettable=True,
-                 character=False):
+    def __init__(
+        self,
+        name,
+        description,
+        examine_text="",
+        take_text="",
+        start_at=None,
+        gettable=True,
+        character=False
+    ):
 
         # The name of the object
         self.name = name
+
+        # The cleaned naem of the object
+        self.name_clean = name.lower().replace(" ", "_")
         
         # The default description of the object.
         self.description = description
@@ -444,7 +462,7 @@ class Parser:
                     
                     self.game.curr_location.check_special_events(self.game)
             else:
-                narration += ("You can't go %s from here.\n" % direction.capitalize())
+                narration += ("You can not reach %s from here.\n" % direction.title())
         return self.game.curr_location.get_property('end_game'), narration
 
     def check_inventory(self, command):
@@ -484,7 +502,6 @@ class Parser:
         if not matched_item:
             narration = "You don't see anything special."
         return narration
-
 
     def take(self, command):
         """ The player wants to put something in their inventory """
@@ -537,7 +554,6 @@ class Parser:
         if not matched_item:
             print("You don't have that.")
 
-
     def run_special_command(self, command):
         """
         Run a special command associated with one of the items in this location
@@ -558,6 +574,10 @@ class Parser:
 
     def get_direction(self, command):
         command = command.lower()
+        if "go to " in command:
+            return command.replace("go to ", "")
+        if "go " in command:
+            return command.replace("go ", "")
         if command == "n" or "north" in command:
             return "north" 
         if command == "s" or "south" in command:
@@ -681,72 +701,31 @@ def perform_multiple_actions(game, *args):
     return is_end
 
 
-def build_game():
-    # Locations
-    nowhere = Location("nowhere", "")
+def build_game(
+    locations_filename="game/static/game/data/locations.json",
+    characters_filename="game/static/game/data/characters.json"
+):
+    # initialize locations
+    locations = {}
+    location_data = json.load(open(locations_filename, 'r'))
+    for name, data in location_data.items():
+        locations[name] = {
+            "obj": Location(name, data["description"]),
+            "connections": data["connections"]
+        }
 
-    cottage = Location("Cottage", "You are standing in a small cottage.")
-    garden_path = Location("Garden Path", "You are standing on a lush garden path. There is a cottage here.")
-    cliff = Location("Cliff", "There is a steep cliff here. You fall off the cliff and lose the game. THE END.")
-    cliff.set_property('end_game', True)
-    fishing_pond = Location("Fishing Pond", "You are at the edge of a small fishing pond.")
-    winding_path = Location("Winding Path", "You are walking along a winding path.")
-    top_of_the_tall_tree = Location("Top of the Tall Tree", "You are the top of the tall tree.")
-    drawbridge = Location("Drawbridge", "You are standing on one side of a drawbridge leading to ACTION CASTLE..")
-    courtyard = Location("Courtyard", "You are in the courtyard of ACTION CASTLE.")
-    tower_stairs = Location("Tower Stairs", "You are climbing the stairs to the tower.")
-    tower = Location("Tower", "You are inside a tower.")
-    dungeon_stairs = Location("Dungeon Stairs", "You are climbing the stairs down to the dungeon.")
-    dungeon = Location("Dungeon", "You are in the dungeon.")
-    great_feasting_hall = Location("Great Feasting Hall", "You stand inside the Great Feasting Hall.")
-    throne_room = Location("Throne Room", "This is the throne room of ACTION CASTLE.")
+    # initialize connections
+    for name, data in locations.items():
+        location, connections = data["obj"], data["connections"]
+        connected_locations = [locations[name]["obj"] for name in connections]
+        location.add_connections(connections, connected_locations)
 
-    # Connections
-    def _add_connections(curr_location, directions, next_locations):
-        for direction, next_location in zip(directions, next_locations):
-            curr_location.add_connection(direction, next_location)
-    _add_connections(cottage, ["out"], [garden_path])
-    _add_connections(garden_path, ["south", "north"], [fishing_pond, winding_path])
-    _add_connections(winding_path, ["up", "east"], [top_of_the_tall_tree, drawbridge])
-    _add_connections(drawbridge, ["east"], [courtyard])
-    _add_connections(courtyard, ["east", "up", "down"], [great_feasting_hall, tower_stairs, dungeon_stairs])
-    _add_connections(tower_stairs, ["up"], [tower])
-    _add_connections(dungeon_stairs, ["down"], [dungeon])
-    _add_connections(great_feasting_hall, ["east"], [throne_room])
+    # initialize characters
+    characters = []
+    characters_data = json.load(open(characters_filename, 'r'))
+    for name, data in characters_data.items():
+        character = Item(name, data["description"], data["appearance"], start_at=locations[data["location"]]['obj'], character=True)
+        characters.append(character)
 
-    # Items that you can pick up
-    lamp = Item("lamp", "a lamp", "Player can now LIGHT the lamp. While the lantern is lit the player can go directly from the courtyard to the dungeon by going down.", start_at=None)
-    lighted_lamp = Item("lighted_lamp", "a lighted lamp", "This lighted lamp lights up darkness.", start_at=None)
-    fishing_pole = Item("pole", "a fishing pole", "A SIMPLE FISHING POLE.", start_at=cottage)
-    potion = Item("potion", "a poisonous potion", "IT'S BRIGHT GREEN AND STEAMING.", start_at=cottage, take_text='As you near the potion, the fumes cause you to faint and lose the game. THE END.')
-    potion.set_property('end_game', True)
-    rose = Item("rose", "a red rose", "IT SMELLS GOOD.", start_at=None)
-    fish = Item("fish", "a dead fish", "IT SMELLS TERRIBLE.", start_at=None)
-    branch = Item("branch", "a stout dead branch", "It can be used once to HIT or CLUB something, whereupon it will break into pieces and be rendered unusable.", "Taking the dead branch causes it to snap off.", start_at=top_of_the_tall_tree)
-    key = Item("key", "a key", start_at=None)
-    candle = Item("candle", "a candle", start_at=great_feasting_hall)
-    crown = Item("crown", "a crown", "you may only wear it once married.", start_at=None)
-    wearing_crown = Item("wearing_crown", "the crown you're wearing", "the crown you're wearing", start_at=None)
-
-    # Scenery (not things that you can pick up)
-    pond = Item("pond", "a small fishing pond", "THERE ARE FISH IN THE POND.", start_at=fishing_pond, gettable=False)
-    rosebush = Item("rosebush", "a rosebush", "THE ROSEBUSH CONTAINS A SINGLE RED ROSE.    IT IS BEAUTIFUL.", start_at=garden_path, gettable=False)
-    tree = Item("tree", "a tall tree", "The tree contains a stout, dead branch.", start_at=top_of_the_tall_tree, gettable=False)
-    troll = Item("troll", "a mean troll", "The troll is warty, green and hungry.", start_at=drawbridge, gettable=False)
-    guard = Item("guard", "a armed guard", "The guard is brandishing a short sword.", start_at=courtyard, gettable=False)
-    unconcious_guard = Item("unconcious_guard", "an unconcious_guard", "The guard is unconcious_guard.", start_at=nowhere, gettable=False)
-    kneeing_guard = Item("kneeing_guard", "a kneeing guard", "The guard drops to a knee and hails his new king.", start_at=nowhere, gettable=False)
-    locked_door = Item("locked_door", "a locked door", "This is a locked door.", start_at=tower_stairs, gettable=False)
-    princess = Item("princess", "a beautiful princess", start_at=tower, gettable=False)
-    ghost = Item("ghost", "the ghost has claw-like ﬁngers and wears a crown.", start_at=dungeon, gettable=False)
-    runes = Item("runes", "strange runes.", "The runes seem to be a spell of exorcism", start_at=great_feasting_hall, gettable=False)
-    throne = Item("throne", "an ornate golden throne.", start_at=throne_room, gettable=False)
-
-    # Characters
-    harry = Item("Harry Potter", "", "", start_at=cottage, gettable=False, character=True)
-    lord_v = Item("Lord Voldemort", "", "", start_at=cottage, gettable=False, character=True)
-
-    # The player starts the game with a lamp in his inventory.
-    game = Game(cottage)
-    game.add_to_inventory(lamp)
+    game = Game(list(locations.values())[0]["obj"])
     return game

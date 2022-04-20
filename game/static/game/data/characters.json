@@ -1,0 +1,72 @@
+{
+    "Nicolas Flamel": {
+        "description": "Nicolas Flamel is a French man who has been alive for centuries and is known for having the philosopher's stone, which is a stone that can turn any metal into pure gold.",
+        "appearance": "Nicolas Flamel is an old, bald wizard with a long white beard.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Albus Dumbledore": {
+        "description": "Albus Dumbledore is the headmaster of Hogwarts School of Witchcraft and Wizardry and a highly respected member of the wizarding community. He is well-versed in magic and is able to cast powerful spells. Dumbledore is also a noted expert on the Philosopher's Stone, an artefact that is said to",
+        "appearance": "Albus Dumbledore is a tall, thin wizard with a long white beard and kind eyes. He wears a long, flowing white robe and a pointed wizard's hat.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Firenze": {
+        "description": "Firenze is a forest centaur who teaches Harry about magic and Voldemort's plot to steal the philosopher's stone.",
+        "appearance": "Firenze has a humanoid form, but his body is covered in a half-man, half-horse coat of fur. He has a long, pointed nose, bright green eyes, and short, white hair.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Quirrell": {
+        "description": "Quirrell is a Defence Against the Dark Arts teacher who seems to be under the control of Voldemort.",
+        "appearance": "Quirrell's appearance is that of a kindly, elderly wizard.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Hedwig": {
+        "description": "Hedwig is a small, brown owl that Harry purchased from Ollivander. She is very loyal to Harry and follows him everywhere.",
+        "appearance": "Hedwig is a large, black owl with a yellow beak and auburn feathers.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Voldemort": {
+        "description": "Voldemort is a dark and powerful wizard who killed Harry's parents. He is obsessed with obtaining the philosopher's stone, which will restore his body and allow him to dominate the wizarding world.",
+        "appearance": "Voldemort is a dark, hooded figure with a snake-like face.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Harry Potter": {
+        "description": "Harry Potter is a young, talented wizard who is hated and feared by most of the people in the wizarding world because of Lord Voldemort, a powerful dark wizard who killed Harry's parents. However, Harry is famous in the wizarding world and is the only one who can stop Voldemort. Harry is also the only",
+        "appearance": "Harry is a young, thin boy with messy, black hair. He wears round, brown glasses and a pointed wizard's hat.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Dudley": {
+        "description": "Dudley is a bully and Vernon's son. He is always picking on Harry and is always trying to get him into trouble.",
+        "appearance": "Dudley appears to be a normal, average-sized boy. He is not particularly muscular or skinny, but he is not particularly bulky either. He has a round face and big, round eyes.",
+        "location": "Privet Drive"
+    },
+    "Draco Malfoy": {
+        "description": "Draco Malfoy is a first-year student at Hogwarts and a member of Slytherin, known for its dark wizards. He is cruel to Harry and Ron, and unsuccessfully tries to fool them into risking expulsion.",
+        "appearance": "Draco Malfoy is a mean-looking, sneering first-year student who is often a bully to Harry and Ron. He has greasy, oily hair and a hooked nose.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Severus Snape": {
+        "description": "Severus Snape is a Potions master at Hogwarts who favours Slytherin while seeking to fail Harry. He is initially suspicious of Harry, but later becomes his friend.",
+        "appearance": "Severus Snape is a tall, thin man with a long, pale face and greasy black hair that hangs in his face. He has a scar on his right cheek and a cold, calculating look in his eyes.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Lily Potter": {
+        "description": "Lily Potter is a kind and loving woman who died to protect her son.",
+        "appearance": "Lily Potter is a beautiful woman with long, curly, black hair. She wears glasses and often has a happy, excited expression on her face.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Hermione Granger": {
+        "description": "Hermione is a smart, intuitive young woman who is not afraid to stand up for what she believes in. She is also a very good friend to Harry and Ron.",
+        "appearance": "Hermione is a young woman with frizzy brown hair and large brown eyes. She is very intelligent and is one of Harry's best friends at Hogwarts.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Rubeus Hagrid": {
+        "description": "Rubeus Hagrid is a half-giant who takes Harry to Diagon Alley, the hidden wizard commerce and retail section in London, to buy school supplies and a wand. Hagrid is a kind and gentle giant, and Harry comes to like and trust him.",
+        "appearance": "Rubeus Hagrid is a half-giant who is very kind and gentle. He has a large, rough head and is always wearing a big smile.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    },
+    "Ronald Weasley": {
+        "description": "Ronald Weasley is a friendly and outgoing first-year student at Hogwarts School of Witchcraft and Wizardry. He befriends Harry Potter and Hermione Granger during their first year at the school, and the three become close friends. Ron is a skilled Quidditch player and enjoys participating in school activities.",
+        "appearance": "Ronald Weasley is a young, red-haired boy who is best friends with Harry Potter. He is often described as being clumsy, but is also brave and loyal.",
+        "location": "Hogwarts School of Witchcraft and Wizardry"
+    }
+}
