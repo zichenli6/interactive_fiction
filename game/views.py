@@ -2,10 +2,10 @@ from tokenize import TokenInfo
 from xml.dom.pulldom import CHARACTERS
 from django.shortcuts import render
 from django.http import HttpResponse
-import time
 
 from .game import *
 from .dialoGPT import *
+
 
 game = build_game()
 parser = Parser(game)
@@ -18,7 +18,7 @@ player = {
     "appearance": "I am wearing jeans. The jeans are loose but strong. I am wearing windbreaker. The windbreaker is long, black and looks very cold. I am wearing a hat. I'm wearing a hat. The hat is brown and partly hides my face."
 }
 tokenizer, model = load_models()
-chat_history_ids = tokenizer.encode("", return_tensors='pt').long().to(device)
+chat_history_ids_list = [tokenizer.encode("", return_tensors='pt').long().to(device) for _ in characters]
 
 
 def home(request):
@@ -26,7 +26,7 @@ def home(request):
 
 
 def parse_command(request):
-    global narration_history, characters, player, tokenizer, model, chat_history_ids
+    global narration_history, characters, player, tokenizer, model, chat_history_ids_list
     if request.method == "POST": 
         if "command" in request.POST:
             command = request.POST["command"]
@@ -34,13 +34,15 @@ def parse_command(request):
             narration_history += narration + "\n"
             if current_characters is not None:
                 characters = current_characters
+                chat_history_ids_list = [tokenizer.encode("", return_tensors='pt').long().to(device) for _ in characters]
         elif "message" in request.POST:
             idx = int(request.POST['characterId'][0]) - 1
             characters[idx]["dialogues"].append(request.POST['message'])
             chat_history_ids, response = get_dialogue(
-                tokenizer, model, player, characters[idx], request.POST['message'], chat_history_ids)
+                tokenizer, model, player, characters[idx], request.POST['message'], chat_history_ids_list[idx]
+            )
             characters[idx]["dialogues"].append(response.strip("\n"))
-
+            chat_history_ids_list[idx] = chat_history_ids
     context = {
         "narration": narration_history,
         "location": "game/locations/" + parser.game.curr_location.name_cleaned + ".png",
