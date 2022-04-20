@@ -5,7 +5,7 @@ from django.http import HttpResponse
 import time
 
 from .game import *
-from dialoGPT import *
+from .dialoGPT import *
 
 game = build_game()
 parser = Parser(game)
@@ -18,14 +18,15 @@ player = {
     "appearance": "I am wearing jeans. The jeans are loose but strong. I am wearing windbreaker. The windbreaker is long, black and looks very cold. I am wearing a hat. I'm wearing a hat. The hat is brown and partly hides my face."
 }
 tokenizer, model = load_models()
+chat_history_ids = tokenizer.encode("", return_tensors='pt').long().to(device)
 
 
-# Create your views here.
 def home(request):
     return HttpResponse("Home Page")
 
+
 def parse_command(request):
-    global narration_history, characters, player, tokenizer, model
+    global narration_history, characters, player, tokenizer, model, chat_history_ids
     if request.method == "POST": 
         if "command" in request.POST:
             command = request.POST["command"]
@@ -36,9 +37,9 @@ def parse_command(request):
         elif "message" in request.POST:
             idx = int(request.POST['characterId'][0]) - 1
             characters[idx]["dialogues"].append(request.POST['message'])
-            time.sleep(2)
-            get_dialogue(tokenizer, model, player, characters[idx], request.POST['message'])
-            characters[idx]["dialogues"].append("I am good! How are you?")
+            chat_history_ids, response = get_dialogue(
+                tokenizer, model, player, characters[idx], request.POST['message'], chat_history_ids)
+            characters[idx]["dialogues"].append(response.strip("\n"))
 
     context = {
         "narration": narration_history,

@@ -11,7 +11,7 @@ def load_models():
     tokenizer = GPT2Tokenizer.from_pretrained('microsoft/DialoGPT-small')
 
     # initialize model
-    model_path = "game/static/game/DialoGPT-ft-light.pth"
+    model_path = "game/static/game/dialoGPT.pth"
     model = AutoModelForCausalLM.from_pretrained(pretrained_model_name_or_path="microsoft/DialoGPT-medium").to(device)
     model.load_state_dict(torch.load(model_path, map_location=device))
     model.eval()
@@ -19,12 +19,14 @@ def load_models():
     return tokenizer, model
 
 
-def get_dialogue(tokenizer, model, player, character, input_str):
+def get_dialogue(tokenizer, model, player, character, input_str, chat_history_ids):
     prompt = "Setting:\n* " + character["location"] + ": " + character["location_description"] + "\n\n" \
              + "Characters:\n* " + character["name"] + ":\n- persona: " + character["persona"] + "\n" \
              + "- appearance: " + character["appearance"] + "\n* Player:\n" + "- persona: " + player["persona"] + "\n" \
              + "- appearance: " + player["appearance"] + "\n\n\n===\n\nConversation:\n"
-    generate_response(tokenizer, model, input_str, prompt, "", "Player:", character["name"] + ":")
+    player_str = "Player:"
+    npc_str = character["name"] + ":"
+    return generate_response(tokenizer, model, input_str, prompt, chat_history_ids, player_str, npc_str)
         
 
 
@@ -56,13 +58,12 @@ def inference(
     return chat_history_ids, response
 
 
-def generate_response(tokenizer, model, input_str, prompt, chat_history, player, other_character):
+def generate_response(tokenizer, model, input_str, prompt, chat_history_ids, player_str, npc_str):
     global device
 
     prompt_ids = tokenizer.encode(prompt, return_tensors='pt').long().to(device)
-    chat_history_ids = tokenizer.encode(chat_history, return_tensors='pt').long().to(device)
-    user_ids = tokenizer.encode(player, return_tensors='pt').long().to(device)
-    other_character_ids = tokenizer.encode(other_character, return_tensors='pt').long().to(device)
+    user_ids = tokenizer.encode(player_str, return_tensors='pt').long().to(device)
+    other_character_ids = tokenizer.encode(npc_str, return_tensors='pt').long().to(device)
 
     newline_ids = tokenizer.encode("\n", return_tensors='pt').to(device)
     eos_token_id = newline_ids[0]
@@ -75,6 +76,7 @@ def generate_response(tokenizer, model, input_str, prompt, chat_history, player,
         prompt_ids, chat_history_ids, 
         start_character_ids=other_character_ids, eos_token_id=eos_token_id
     )
+    return chat_history_ids, response
 
 
 
