@@ -128,4 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-cornell-movie-dialogs-corpus/*
+*/cornell-movie-dialogs-corpus/*
