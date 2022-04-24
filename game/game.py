@@ -75,9 +75,9 @@ class Game:
                 if item.properties["character"]:
                     continue
                 if len(item.get_commands()) > 0:
-                    items.append(item.description + "\n\t" + ", ".join(item.get_commands()))
+                    items.append(item.name + "\n\t" + ", ".join(item.get_commands()))
                 else:
-                    items.append(item.description + "\n")
+                    items.append(item.name.title() + "\n")
         if len(items) > 0:
             narration = "You see:\n" + "".join(items)
         return narration
@@ -423,12 +423,14 @@ class Parser:
             end_game = True
             narration += "You have stayed here for too long."
 
-        # Query current characters at location
+        # Query current characters and items at location
+        items = None
         characters = None
         if intent == "direction":
             characters = self.game.get_current_characters()
+            items = self.game.get_items_in_scope()
 
-        return narration, characters
+        return narration, characters, items
 
     ### Intent Functions ###
     def go_in_direction(self, command):
@@ -703,7 +705,8 @@ def perform_multiple_actions(game, *args):
 
 def build_game(
     locations_filename="game/static/game/data/locations.json",
-    characters_filename="game/static/game/data/characters.json"
+    characters_filename="game/static/game/data/characters.json",
+    items_filename="game/static/game/data/items.json"
 ):
     # initialize locations
     locations = {}
@@ -726,6 +729,13 @@ def build_game(
     for name, data in characters_data.items():
         character = Item(name, data["description"], data["appearance"], start_at=locations[data["location"]]['obj'], character=True)
         characters.append(character)
+
+    # initialize items
+    items = []
+    items_data = json.load(open(items_filename, 'r'))
+    for name, data in items_data.items():
+        item = Item(name, data["description"], data["description"], start_at=locations[data["location"]]['obj'], character=False)
+        items.append(item)
 
     game = Game(list(locations.values())[0]["obj"])
     return game

@@ -1,0 +1,122 @@
+{
+    "wand": {
+        "location": "King's Cross Railway Station",
+        "description": "A wand is a magic staff used by wizards and witches to cast spells."
+    },
+    "school supplies": {
+        "location": "Diagon Alley",
+        "description": "Harry buys school supplies, including a wand and supplies for his Quidditch team, from Ollivander's Wand Shop."
+    },
+    "invisibility cloak": {
+        "location": "Platform 9 3/4",
+        "description": "The invisibility cloak is a magic cloak that makes the wearer invisible."
+    },
+    "mirror erised": {
+        "location": "Hogwarts School of Witchcraft and Wizardry",
+        "description": "The Mirror of Erised shows what the viewer most desires."
+    },
+    "sorting hat": {
+        "location": "Hogwarts School of Witchcraft and Wizardry",
+        "description": "The sorting hat is a magical object that sorts the students among four houses \u2013 Gryffindor, Slytherin, Hufflepuff, and Ravenclaw."
+    },
+    "broomstick": {
+        "location": "Platform 9 3/4",
+        "description": "Harry's broomstick is a Nimbus 2000, which is the best broom for Quidditch."
+    },
+    "letter school": {
+        "location": "The Hogwarts Express",
+        "description": "The letter school is a school where students go to learn about magic."
+    },
+    "school uniform": {
+        "location": "The Hogwarts Express",
+        "description": "All students wear red or purple robes and a pointed hat."
+    },
+    "quidditch team": {
+        "location": "The Hogwarts Express",
+        "description": "The Gryffindor Quidditch team is led by Harry Potter and is known for its prowess in the air."
+    },
+    "school owl": {
+        "location": "The Hogwarts Express",
+        "description": "Harry's owl is named Hedwig, and she is a good owl who helps Harry with schoolwork."
+    },
+    "persons family": {
+        "location": "The Mirror of Erised",
+        "description": "Harry's abusive aunt and uncle, Vernon and Petunia Dursley and their bullying son, Dudley live with them."
+    },
+    "money": {
+        "location": "The Mirror of Erised",
+        "description": "Money is a valuable resource used to purchase goods and services."
+    },
+    "good fortune": {
+        "location": "The Mirror of Erised",
+        "description": "Harry Potter was able to achieve several successes during his time at Hogwarts, such as being on the Quidditch team and being able to save the school from an attempted robbery."
+    },
+    "power": {
+        "location": "The Mirror of Erised",
+        "description": "The power of the mirror is that it shows what the viewer most desires."
+    },
+    "beauty": {
+        "location": "The Mirror of Erised",
+        "description": "Beauty is something that is seen on the inside."
+    },
+    "love": {
+        "location": "The Mirror of Erised",
+        "description": "Love is a powerful emotion that can make people do great things."
+    },
+    "short list people viewed mirror erised": {
+        "location": "The Mirror of Erised",
+        "description": "Harry, Hermione, Ron"
+    },
+    "white car": {
+        "location": "Privet Drive",
+        "description": "The car in the story is a white Ford Anglia."
+    },
+    "brown dog": {
+        "location": "Privet Drive",
+        "description": "The brown dog is a friendly animal that Harry befriends on his journey to Hogwarts."
+    },
+    "single flower": {
+        "location": "Privet Drive",
+        "description": "The flower in the garden of the Dursleys' home is a dandelion."
+    },
+    "mailbox": {
+        "location": "Privet Drive",
+        "description": "The mailbox is near the front of the house and has a \"Privet Drive\" sign on it."
+    },
+    "wand core": {
+        "location": "Hogwarts School of Witchcraft and Wizardry",
+        "description": "The wand core is the part of the wand that is made of wood, and it contains the magic that makes the wand work."
+    },
+    "bracelet": {
+        "location": "Hogwarts School of Witchcraft and Wizardry",
+        "description": "The bracelet is a gold bracelet with a snake on the front."
+    },
+    "philosophers stone": {
+        "location": "Platform 9 3/4",
+        "description": "The philosophers stone is a diamond-like object that is said to grant its holder immortality and the ability to turn any metal into pure gold."
+    },
+    "cupboard": {
+        "location": "The Dursleys",
+        "description": "The cupboard in which Harry spends most of his time at the Dursleys is a small, dark, and damp space where the family stores their food."
+    },
+    "television": {
+        "location": "The Dursleys",
+        "description": "Television is a medium used to watch moving images that are usually accompanied by sound."
+    },
+    "living room": {
+        "location": "The Dursleys",
+        "description": "The living room in the Dursleys' home was always filled with unpleasant smells."
+    },
+    "kitchen": {
+        "location": "The Dursleys",
+        "description": "The kitchen is a large, dark room where the Dursleys cook their meals. There is a stove, a refrigerator, and a cupboard."
+    },
+    "garden": {
+        "location": "The Dursleys",
+        "description": "The garden has a small pond and a few small trees."
+    },
+    "harrys": {
+        "location": "The Dursleys",
+        "description": "Harry is 11 when he is accepted to Hogwarts School of Witchcraft and Wizardry, which he had been trying to attend for years because he knew his parents were wizards. Once he is there, he befriends Ron and Hermione, who initially dislike him. Harry also becomes good friends with Draco Malfoy. During their first"
+    }
+}

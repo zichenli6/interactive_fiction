@@ -1,7 +1,6 @@
-from tokenize import TokenInfo
-from xml.dom.pulldom import CHARACTERS
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.views.generic.edit import FormView
+from game.forms import ProfileForm
 
 from .game import *
 from .dialoGPT import *
@@ -11,6 +10,7 @@ game = build_game()
 parser = Parser(game)
 narration_history = game.describe()
 characters = game.get_current_characters()
+items = game.get_items_in_scope()
 
 player = {
     "name": "Player",
@@ -21,18 +21,31 @@ tokenizer, model = load_models()
 chat_history_ids_list = [tokenizer.encode("", return_tensors='pt').long().to(device) for _ in characters]
 
 
-def home(request):
-    return HttpResponse("Home Page")
+class ProfileFormView(FormView):
+    template_name = "profile.html"
+    form_class = ProfileForm
+    success_url = "/game"
+
+    def form_valid(self, form):
+        global player
+        player = {
+            "name": form.data["name"],
+            "persona": form.data["persona"],
+            "appearance": form.data["appearance"]
+        }
+        form.save()
+        return super(ProfileFormView, self).form_valid(form)
 
 
 def parse_command(request):
-    global narration_history, characters, player, tokenizer, model, chat_history_ids_list
+    global narration_history, characters, items, player, tokenizer, model, chat_history_ids_list
     if request.method == "POST": 
         if "command" in request.POST:
             command = request.POST["command"]
-            narration, current_characters = parser.parse_command(command)
+            narration, current_characters, current_items = parser.parse_command(command)
             narration_history += narration + "\n"
             if current_characters is not None:
+                items = current_items
                 characters = current_characters
                 chat_history_ids_list = [tokenizer.encode("", return_tensors='pt').long().to(device) for _ in characters]
         elif "message" in request.POST:
@@ -45,8 +58,10 @@ def parse_command(request):
             chat_history_ids_list[idx] = chat_history_ids
     context = {
         "narration": narration_history,
-        "location": "game/locations/" + parser.game.curr_location.name_cleaned + ".png",
-        "characters": characters
+        "location": parser.game.curr_location.name,
+        "location_img": "game/locations/" + parser.game.curr_location.name_cleaned + ".png",
+        "characters": characters,
+        "items": items
     }
 
     return render(request, 'game.html', context)

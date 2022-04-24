@@ -1,0 +1,168 @@
+@font-face { font-family: ARCADE; src: url("{% static 'game/ARCADE.TTF' %}"); } 
+body {
+    background: black;
+    font-family: 'Open Sans', sans-serif;
+}
+.container {
+    border-radius: 25px;
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 20px;
+    background: whitesmoke;
+    box-shadow: 0px 0px 20px 0px  #63d3a6;
+}
+
+.avatar-upload {
+    position: relative;
+    max-width: 205px;
+    margin: 50px auto;
+}
+.avatar-upload .avatar-edit {
+    position: absolute;
+    right: 12px;
+    z-index: 1;
+    top: 10px;
+}
+.avatar-upload .avatar-edit .avatar-input {
+    display: none;
+}
+.avatar-upload .avatar-edit .avatar-input + label {
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    margin-bottom: 0;
+    border-radius: 100%;
+    background: #FFFFFF;
+    border: 1px solid transparent;
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.12);
+    cursor: pointer;
+    font-weight: normal;
+    transition: all .2s ease-in-out;
+}
+.avatar-upload .avatar-edit .avatar-input + label:hover {
+    background: #f1f1f1;
+    border-color: #d6d6d6;
+}
+.avatar-upload .avatar-edit .avatar-input + label:after {
+    content: "\f040";
+    font-family: 'FontAwesome';
+    color: #757575;
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: auto;
+}
+.avatar-upload .avatar-preview {
+    width: 192px;
+    height: 192px;
+    position: relative;
+    border-radius: 100%;
+    border: 6px solid #F8F8F8;
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1);
+}
+.avatar-upload .avatar-preview > div {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+form {
+    margin: auto;
+    max-width: 400;
+}
+
+.field{
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #676767;
+    overflow-wrap: break-word;
+    margin-top: 20px;
+}
+
+.name-input {
+    border-radius: 15px;
+    border: 1px solid #b7b7b7;
+    padding: 5px 5px 5px 10px;
+    font-size: 15px;
+    transition: 0.2s;
+    height: 35;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.name-input:focus{
+    outline: none;
+    border: 1px solid #64d488;
+}
+
+.persona-input {
+    border-radius: 15px;
+    border: 1px solid #b7b7b7;
+    padding: 5px 5px 5px 10px;
+    font-size: 15px;
+    transition: 0.2s;
+    height: 100;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.persona-input:focus{
+    outline: none;
+    border: 1px solid #64d488;
+}
+
+
+button{
+    position: relative;
+    color: #054231;
+    letter-spacing: 1px;
+    margin: 20px;
+    font-size: 18px;
+    padding: 10px;
+    text-align: center;
+    transition: 0.5s;
+    border-radius: 10px;
+    cursor: pointer;
+    border-radius: 25px;
+    border: none;
+    background: #64d488;
+}
+button:hover{
+    left: 90;
+    color: #fff;
+    width: 180px;
+    box-shadow: 0px 0px 20px 0px  #63d3a6;
+}
+button:focus{
+    outline: none;
+}
+.lds-ripple {
+    display: inline-block;
+    position: relative;
+    width: 64px;
+    height: 64px;
+}
+.lds-ripple div {
+    position: absolute;
+    border: 4px solid #fff;
+    opacity: 1;
+    border-radius: 50%;
+    animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+    animation-delay: -0.5s;
+}
+.save{
+    font-weight: 600;
+    left: 150px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: 20px;
+    box-shadow: 20px 0px 40px 0px  #63d3a6;
+}

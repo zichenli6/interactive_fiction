@@ -20,6 +20,7 @@
 
         // Header onclick event
         for (let i = 0; i < typeAreas.length; ++i){
+            headers[i].style.borderRadius = "20px";
             headers[i].addEventListener("click", (e) => {
                 if (typeAreas[i].classList.contains("d-none")) {
                     headers[i].style.borderRadius = "20px 20px 0 0";
@@ -67,7 +68,7 @@
             <i class="fas fa-ellipsis-h"></i>
         </span>
         </div>
-        <div class="chat-room">
+        <div class="chat-room d-none">
         {% for dialogue in character.dialogues %}
             {% if forloop.counter|divisibleby:2 %}
                 <div class="message message-left">
@@ -90,7 +91,7 @@
             {% endif %}
         {% endfor %}
         </div>
-        <div class="type-area">
+        <div class="type-area d-none">
         <div class="input-wrapper">
             <form class="message-form" method="POST" action="">
                 {% csrf_token %}
