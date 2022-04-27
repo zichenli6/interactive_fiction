@@ -4,14 +4,13 @@ from transformers import AutoModelForCausalLM, GPT2Tokenizer
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
 
-def load_models():
+def load_models(model_path="game/static/game/dialoGPT.pth"):
     global device
 
     # initialize tokenizer
     tokenizer = GPT2Tokenizer.from_pretrained('microsoft/DialoGPT-small')
 
     # initialize model
-    model_path = "game/static/game/dialoGPTv3.pth"
     model = AutoModelForCausalLM.from_pretrained(pretrained_model_name_or_path="microsoft/DialoGPT-medium").to(device)
     model.load_state_dict(torch.load(model_path, map_location=device))
     model.eval()
