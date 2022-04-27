@@ -10,7 +10,7 @@ game = build_game()
 parser = Parser(game)
 narration_history = game.describe()
 characters = game.get_current_characters()
-items = game.get_items_in_scope()
+items = game.get_current_items()
 
 player = {
     "name": "Player",

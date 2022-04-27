@@ -45,8 +45,7 @@ class Game:
         """
         location = self.describe_current_location()
         exits = self.describe_exits()
-        items = self.describe_items()
-        return "\n".join([location, exits, items])
+        return "\n".join([location, exits])
 
     def describe_current_location(self):
         """
@@ -99,6 +98,28 @@ class Game:
                     "dialogues": []
                 })
         return characters
+
+    def get_current_items(self):
+        items = []
+        for item_name in self.curr_location.items:
+            item = self.curr_location.items[item_name]
+            if item.properties["character"]:
+                continue
+            items.append({
+                "name": item.name.title(),
+                "image": "game/items/" + item.name_clean + ".png",
+                "description": item.description
+            })
+        for item_name in self.inventory:
+            item = self.curr_location.items[item_name]
+            if item.properties["character"]:
+                continue
+            items.append({
+                "name": item.name.title(),
+                "image": "game/items/" + item.name_clean + ".png",
+                "description": item.description
+            })
+        return items
 
     def add_to_inventory(self, item):
         """
@@ -428,7 +449,7 @@ class Parser:
         characters = None
         if intent == "direction":
             characters = self.game.get_current_characters()
-            items = self.game.get_items_in_scope()
+            items = self.game.get_current_items()
 
         return narration, characters, items
 
@@ -441,6 +462,9 @@ class Parser:
         narration = "* " + direction + "\n"
 
         if direction:
+            for connection in self.game.curr_location.connections:
+                if direction in connection:
+                    direction = connection
             if direction in self.game.curr_location.connections:
                 if self.game.curr_location.is_blocked(direction, self.game):
                     # check to see whether that direction is blocked.
@@ -737,5 +761,5 @@ def build_game(
         item = Item(name, data["description"], data["description"], start_at=locations[data["location"]]['obj'], character=False)
         items.append(item)
 
-    game = Game(list(locations.values())[0]["obj"])
+    game = Game(list(locations.values())[5]["obj"])
     return game

@@ -22,7 +22,7 @@
     "Hedwig": {
         "description": "Hedwig is a small, brown owl that Harry purchased from Ollivander. She is very loyal to Harry and follows him everywhere.",
         "appearance": "Hedwig is a large, black owl with a yellow beak and auburn feathers.",
-        "location": "Hogwarts School of Witchcraft and Wizardry"
+        "location": "Diagon Alley"
     },
     "Voldemort": {
         "description": "Voldemort is a dark and powerful wizard who killed Harry's parents. He is obsessed with obtaining the philosopher's stone, which will restore his body and allow him to dominate the wizarding world.",
@@ -32,7 +32,7 @@
     "Harry Potter": {
         "description": "Harry Potter is a young, talented wizard who is hated and feared by most of the people in the wizarding world because of Lord Voldemort, a powerful dark wizard who killed Harry's parents. However, Harry is famous in the wizarding world and is the only one who can stop Voldemort. Harry is also the only",
         "appearance": "Harry is a young, thin boy with messy, black hair. He wears round, brown glasses and a pointed wizard's hat.",
-        "location": "Hogwarts School of Witchcraft and Wizardry"
+        "location": "Diagon Alley"
     },
     "Dudley": {
         "description": "Dudley is a bully and Vernon's son. He is always picking on Harry and is always trying to get him into trouble.",
@@ -57,16 +57,16 @@
     "Hermione Granger": {
         "description": "Hermione is a smart, intuitive young woman who is not afraid to stand up for what she believes in. She is also a very good friend to Harry and Ron.",
         "appearance": "Hermione is a young woman with frizzy brown hair and large brown eyes. She is very intelligent and is one of Harry's best friends at Hogwarts.",
-        "location": "Hogwarts School of Witchcraft and Wizardry"
+        "location": "The Hogwarts Express"
     },
     "Rubeus Hagrid": {
         "description": "Rubeus Hagrid is a half-giant who takes Harry to Diagon Alley, the hidden wizard commerce and retail section in London, to buy school supplies and a wand. Hagrid is a kind and gentle giant, and Harry comes to like and trust him.",
         "appearance": "Rubeus Hagrid is a half-giant who is very kind and gentle. He has a large, rough head and is always wearing a big smile.",
-        "location": "Hogwarts School of Witchcraft and Wizardry"
+        "location": "Diagon Alley"
     },
     "Ronald Weasley": {
         "description": "Ronald Weasley is a friendly and outgoing first-year student at Hogwarts School of Witchcraft and Wizardry. He befriends Harry Potter and Hermione Granger during their first year at the school, and the three become close friends. Ron is a skilled Quidditch player and enjoys participating in school activities.",
         "appearance": "Ronald Weasley is a young, red-haired boy who is best friends with Harry Potter. He is often described as being clumsy, but is also brave and loyal.",
-        "location": "Hogwarts School of Witchcraft and Wizardry"
+        "location": "The Hogwarts Express"
     }
 }

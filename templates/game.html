@@ -28,12 +28,6 @@
         height: auto;
     }
 
-    .item-img{
-        width: 100px;
-        height: 100px;
-        padding-bottom: 50px;
-    }
-
     .row {
         display: flex;
     }
@@ -46,6 +40,49 @@
         padding-left: 50px;
         padding-right: 50px;
     }
+
+    .img_wrap {
+        position: relative;
+        height: 180px;
+        width: 180px;
+        padding-bottom: 50px;
+        display: inline-block;
+    }
+
+    .img_description_layer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(248, 0, 194, 0.6);
+        color: #fff;
+        visibility: hidden;
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25;
+        height: 180px;
+        width: 180px;
+
+        /* transition effect. not necessary */
+        transition: opacity .2s, visibility .2s;
+    }
+
+    .img_wrap:hover .img_description_layer {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .img_description {
+        transition: .2s;
+        transform: translateY(1em);
+    }
+
+    .img_wrap:hover .img_description {
+        transform: translateY(0);
+    }
 </style>
 
 <body>
@@ -57,10 +94,17 @@
         </div>
         <div class="column">
             <p style="white-space: pre-wrap;">{{narration}}</p>
-            <img class="item-img" src="{% static location_img %}"/>
+            {% for item in items %}
+                <div class="img_wrap">
+                    <img class="item-img" src="{% static item.image %}" title="{{item.name}}"/>
+                    <div class="img_description_layer">
+                        <p class="img_description"> {{ item.name }} </p>
+                    </div>
+                </div>
+            {% endfor %}
             <form method="POST" action="">
                 {% csrf_token %}
-                > <input type="text" id="commandInput" name="command" style="width: 80%">
+                > <input autofocus type="text" id="commandInput" name="command" style="width: 80%">
                 <input type="submit" style="display: none" />
             </form>
         </div>
