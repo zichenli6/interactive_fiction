@@ -6,15 +6,20 @@ Set up virtual environment with either Anaconda or Python venv (optional but rec
 
 ## 2. Install Libraries
 
-    pip install -r requirements.txt
+    python3 -m pip install -r requirements.txt
 
 ## 3. Download DialoGPT Model
 Save the pre-trained model file to "game/static/game/dialoGPT.pth"
 
-## 4. Start Django Web App
+## 4. Make Django Migrations
+
+    python manage.py makemigrations
+    python manage.py migrate
+
+## 5. Start Django Web App
 Open terminal, activate virtual environment, and run
 
     python manage.py runserver
 
-## 5. Play
+## 6. Play
 Open your favorite browser and go to the local url provided by the terminal in step 4.
