@@ -95,7 +95,7 @@
         <div class="input-wrapper">
             <form class="message-form" method="POST" action="">
                 {% csrf_token %}
-                <input autofocus type="text" id="inputText" name="message" placeholder="Type messages here..." />
+                <input type="text" id="inputText" name="message" placeholder="Type messages here..." />
                 <input type="hidden" name="characterId" value="{{forloop.counter}}"/>
             </form>
         </div>

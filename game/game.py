@@ -45,7 +45,7 @@ class Game:
         """
         location = self.describe_current_location()
         exits = self.describe_exits()
-        return "\n".join([location, exits])
+        return "\n".join([location, exits]) + "\n"
 
     def describe_current_location(self):
         """
@@ -280,15 +280,6 @@ class Location:
         location until the preconditions are all met.
         """
         self.blocks[blocked_direction] = (block_description, preconditions)
-    
-    def check_special_events(self, game):
-        """
-        Special events happen when the preconditions are all met.
-        """
-        for preconditions, descriptions in self.special_events:
-            if check_preconditions(preconditions, game, print_failure_reasons=False):
-                print(descriptions)
-
 
 class Item:
     """
@@ -422,27 +413,21 @@ class Parser:
         if intent == "direction":
             end_game, narration = self.go_in_direction(command)
         elif intent == "redescribe":
-            self.game.describe()
+            narration = self.game.describe()
         elif intent == "examine":
             narration = self.examine(command)
         elif intent == "take":
-            end_game = self.take(command)
+            end_game, narration = self.take(command)
         elif intent == "drop":
-            self.drop(command)
+            narration = self.drop(command)
         elif intent == "inventory":
-            self.check_inventory(command)
+            narration = self.check_inventory(command)
         elif intent == "special":
             end_game, narration = self.run_special_command(command)
         elif intent == "sequence":
             end_game = self.execute_sequence(command)
         else:
             narration = "I'm not sure what you want to do.\n"
-            
-        # Check stay time at current location
-        self.game.curr_location.stay_time += 1
-        if self.game.curr_location.stay_time > 3 and not self.game.curr_location.is_lingerable:
-            end_game = True
-            narration += "You have stayed here for too long."
 
         # Query current characters and items at location
         items = None
@@ -468,7 +453,7 @@ class Parser:
             if direction in self.game.curr_location.connections:
                 if self.game.curr_location.is_blocked(direction, self.game):
                     # check to see whether that direction is blocked.
-                    print(self.game.curr_location.get_block_description(direction))
+                    narration += self.game.curr_location.get_block_description(direction)
                 else:
                     # if it's not blocked, then move there 
                     self.game.curr_location = self.game.curr_location.connections[direction]
@@ -485,22 +470,21 @@ class Parser:
                         self.game.describe_current_location()
                     else:
                         narration += self.game.describe()
-                    
-                    self.game.curr_location.check_special_events(self.game)
             else:
                 narration += ("You can not reach %s from here.\n" % direction.title())
         return self.game.curr_location.get_property('end_game'), narration
 
     def check_inventory(self, command):
-        """ The player wants to check their inventory"""
+        """
+        The player wants to check their inventory.
+        """
+        narration = ""
         if len(self.game.inventory) == 0:
-            print("You don't have anything.")
+            narration = "You don't have anything."
         else:
-            descriptions = []
-            for item_name in self.game.inventory:
-                item = self.game.inventory[item_name]
-                descriptions.append(item.description)
-            print("You have: " + ", ".join(descriptions))
+            item_names = [name for name in self.game.inventory]
+            narration = "You have: " + ", ".join(item_names)
+        return narration
     
     def examine(self, command):
         """
@@ -530,7 +514,10 @@ class Parser:
         return narration
 
     def take(self, command):
-        """ The player wants to put something in their inventory """
+        """
+        The player wants to put something in their inventory.
+        """
+        narration = ""
         command = command.lower()
         matched_item = False
 
@@ -544,26 +531,31 @@ class Parser:
                 if item.get_property('gettable'):
                     self.game.add_to_inventory(item)
                     self.game.curr_location.remove_item(item)
-                    print(item.take_text)
+                    narration = item.take_text
                     end_game = item.get_property('end_game')                  
                 else:
-                    print("You cannot take the %s." % item_name)
+                    narration = "You cannot take the %s." % item_name
                 matched_item = True
                 break
+    
         # check whether any of the items in the inventory match the command
         if not matched_item:
             for item_name in self.game.inventory:
                 if item_name in command:
-                    print("You already have the %s." % item_name)
+                    narration = "You already have the %s." % item_name
                     matched_item = True
+
         # fail
         if not matched_item:
-            print("You can't find it.")
+            narration = "You cannot find it."
 
-        return end_game
+        return end_game, narration
 
     def drop(self, command):
-        """ The player wants to remove something from their inventory """
+        """
+        The player wants to remove something from their inventory.
+        """
+        narration = ""
         command = command.lower()
         matched_item = False
         # check whether any of the items in the inventory match the command
@@ -574,11 +566,12 @@ class Parser:
                     item = self.game.inventory[item_name]
                     self.game.curr_location.add_item(item_name, item)
                     self.game.inventory.pop(item_name)
-                    print("You drop the %s." % item_name)
+                    narration = "You drop the %s." % item_name
                     break
         # fail
         if not matched_item:
-            print("You don't have that.")
+            narration = "You do not have that."
+        return narration
 
     def run_special_command(self, command):
         """
@@ -672,60 +665,6 @@ def check_preconditions(preconditions, game, print_failure_reasons=True):
                 all_conditions_met = False
         # todo - add other types of preconditions
     return all_conditions_met
-
-def add_item_to_inventory(game, *args):
-    """
-    Add a newly created Item and add it to your inventory.
-    """
-    narration = ""
-    (item, action_description, already_done_description) = args[0]
-    if(not game.is_in_inventory(item)):
-        narration = action_description
-        game.add_to_inventory(item)
-    else:
-        narration = already_done_description
-    return False, narration
-
-def describe_something(game, *args):
-    """Describe some aspect of the Item"""
-    (description) = args[0]
-    return False, description
-
-def destroy_item(game, *args):
-    """Removes an Item from the game by setting its location is set to None."""
-    (item, action_description, already_done_description) = args[0]
-    if game.is_in_inventory(item):
-        game.inventory.pop(item.name)
-        print(action_description)
-    elif item.name in game.curr_location.items:
-        game.curr_location.remove_item(item)
-        if item.name in ["troll", "ghost"]:
-            game.curr_location.is_lingerable = True
-        print(action_description)
-    elif item.name in item.location.items:
-        item.location.remove_item(item)
-        print(action_description)
-    else:
-        print(already_done_description)
-    return False
-
-def create_item(game, *args):
-    """Create an Item and add to the game."""
-    (item, create_text, start_at) = args[0]
-    if start_at:
-        start_at.add_item(item.name, item)
-        item.location = start_at
-    print(create_text)
-    return False
-
-def perform_multiple_actions(game, *args):
-    """perform multiple actions."""
-    (multiple_actions) = args[0]
-    is_end = False
-    for action, arguments in multiple_actions:
-        is_end = is_end or action(game, arguments)
-    return is_end
-
 
 def build_game(
     locations_filename="game/static/game/data/locations.json",
