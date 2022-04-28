@@ -47,7 +47,11 @@ def parse_command(request):
             if current_characters is not None:
                 items = current_items
                 characters = current_characters
-                chat_history_ids_list = [tokenizer.encode("", return_tensors='pt').long().to(device) for _ in characters]
+                chat_history_ids_list = [
+                    tokenizer.encode("", return_tensors='pt').long().to(device) for _ in characters
+                ]
+            if current_items is not None:
+                items = current_items
         elif "message" in request.POST:
             idx = int(request.POST['characterId'][0]) - 1
             characters[idx]["dialogues"].append(request.POST['message'])

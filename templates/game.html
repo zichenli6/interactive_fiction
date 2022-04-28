@@ -95,12 +95,14 @@
         <div class="column">
             <p style="white-space: pre-wrap;">{{narration}}</p>
             {% for item in items %}
+                {% if item.in_location %}
                 <div class="img_wrap">
                     <img class="item-img" src="{% static item.image %}" title="{{item.name}}"/>
                     <div class="img_description_layer">
                         <p class="img_description"> {{ item.name }} </p>
                     </div>
                 </div>
+                {% endif %}
             {% endfor %}
             <form method="POST" action="">
                 {% csrf_token %}

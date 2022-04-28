@@ -108,16 +108,18 @@ class Game:
             items.append({
                 "name": item.name.title(),
                 "image": "game/items/" + item.name_clean + ".png",
-                "description": item.description
+                "description": item.description,
+                "in_location": True
             })
         for item_name in self.inventory:
-            item = self.curr_location.items[item_name]
+            item = self.inventory[item_name]
             if item.properties["character"]:
                 continue
             items.append({
                 "name": item.name.title(),
                 "image": "game/items/" + item.name_clean + ".png",
-                "description": item.description
+                "description": item.description,
+                "in_location": False
             })
         return items
 
@@ -281,6 +283,7 @@ class Location:
         """
         self.blocks[blocked_direction] = (block_description, preconditions)
 
+
 class Item:
     """
     Items are objects that a player can get, or scenery
@@ -434,6 +437,8 @@ class Parser:
         characters = None
         if intent == "direction":
             characters = self.game.get_current_characters()
+            items = self.game.get_current_items()
+        if intent in ["take", "drop"]:
             items = self.game.get_current_items()
 
         return narration, characters, items
