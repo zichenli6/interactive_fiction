@@ -11,6 +11,7 @@ parser = Parser(game)
 narration_history = game.describe()
 characters = game.get_current_characters()
 items = game.get_current_items()
+profile_path = "media/images/profile.png"
 
 player = {
     "name": "Player",
@@ -27,13 +28,17 @@ class ProfileFormView(FormView):
     success_url = "/game"
 
     def form_valid(self, form):
-        global player
+        global player, profile_path
         player = {
             "name": "Player",
             "persona": form.data["persona"],
             "appearance": form.data["appearance"]
         }
-        form.save()
+        instance = form.save()
+        try:
+            profile_path = instance.image.path
+        except:
+            pass
         return super(ProfileFormView, self).form_valid(form)
 
 
@@ -65,7 +70,8 @@ def parse_command(request):
         "location": parser.game.curr_location.name,
         "location_img": "game/locations/" + parser.game.curr_location.name_cleaned + ".png",
         "characters": characters,
-        "items": items
+        "items": items,
+        "profile_img": "images/" + profile_path.split("/")[-1]
     }
 
     return render(request, 'game.html', context)

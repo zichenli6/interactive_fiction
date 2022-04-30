@@ -9,7 +9,7 @@ Set up virtual environment with either Anaconda or Python venv (optional but rec
     python3 -m pip install -r requirements.txt
 
 ## 3. Download DialoGPT Model
-Save the pre-trained model file to "game/static/game/dialoGPT.pth"
+Save the pre-trained model([download here](https://drive.google.com/file/d/1cB_KhDmArnk-FRNJUtPDt21WgSDAOYfr/view?usp=sharing)) file to "game/static/game/dialoGPT.pth"
 
 ## 4. Make Django Migrations
 

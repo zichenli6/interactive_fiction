@@ -11,7 +11,7 @@ class Profile(models.Model):
     name = models.CharField("Name", default="", max_length=64)
     persona = models.TextField("Persona", default="")
     appearance = models.TextField("Appearance", default="")
-    image = models.ImageField(upload_to=update_filename)
+    image = models.ImageField(upload_to=update_filename, blank=True, null=True)
 
     def __str__(self):
         return self.name
