@@ -17,8 +17,6 @@ Characters:
 
 Conversation:
 Player:Why did you kill Harry's parents?
-
-< --- END OF PROMPT --- >
 ~~~
 
 Then, we ask ***Why did you kill Harry's parents?***. Three sample responses from different chatbots are shown below (see appendix in the report for details).
