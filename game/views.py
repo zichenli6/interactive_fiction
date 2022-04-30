@@ -29,7 +29,7 @@ class ProfileFormView(FormView):
     def form_valid(self, form):
         global player
         player = {
-            "name": form.data["name"],
+            "name": "Player",
             "persona": form.data["persona"],
             "appearance": form.data["appearance"]
         }

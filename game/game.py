@@ -252,37 +252,6 @@ class Location:
         """
         self.items.pop(item.name)
 
-    def is_blocked(self, direction, game):
-        """
-        Check to if there is an obstacle in this direction.
-        """
-        if not direction in self.blocks:
-            return False
-        (block_description, preconditions) = self.blocks[direction]
-        if check_preconditions(preconditions, game):
-            # All the preconditions have been met. You may pass.
-            return False
-        else: 
-            # There are still obstalces to overcome or puzzles to solve.
-            return True
-
-    def get_block_description(self, direction):
-        """
-        Check to if there is an obstacle in this direction.
-        """
-        if not direction in self.blocks:
-            return ""
-        else:
-            (block_description, preconditions) = self.blocks[direction]
-            return block_description
-
-    def add_block(self, blocked_direction, block_description, preconditions):
-        """
-        Create an obstacle that prevents a player from moving in the blocked 
-        location until the preconditions are all met.
-        """
-        self.blocks[blocked_direction] = (block_description, preconditions)
-
 
 class Item:
     """
@@ -342,22 +311,6 @@ class Item:
         """Add a special action associated with this item"""
         self.commands[command_text] = (function, arguments, preconditions, failure_reason)
 
-    def do_action(self, command_text, game):
-        """
-        Perform a special action associated with this item.
-        """
-        narration = ""
-        end_game = False    # Switches to True if this action ends the game.
-        if command_text in self.commands:
-            function, arguments, preconditions, failure_reason = self.commands[command_text]
-            if check_preconditions(preconditions, game):
-                end_game, narration = function(game, arguments)
-            elif failure_reason != "":
-                narration = failure_reason
-        else:
-            narration = ("Cannot perform the action %s" % command_text)
-        return end_game, narration
-
 
 class Parser:
     """
@@ -374,10 +327,7 @@ class Parser:
 
     def get_player_intent(self, command):
         command = command.lower()
-        if "," in command:
-            # Let the player type in a comma separted sequence of commands
-            return "sequence"
-        elif command.lower() == "redescribe":
+        if command.lower() == "redescribe":
             return "redescribe"
         elif self.get_direction(command):
             # Check for the direction intent
@@ -393,42 +343,29 @@ class Parser:
             return "drop"
         elif "inventory" in command or command.lower() == "i":
             return "inventory"
-        else: 
-            for item in self.game.get_items_in_scope():
-                special_commands = item.get_commands()
-                for special_command in special_commands:
-                    if command == special_command.lower():
-                        return "special"
+        elif "who is " in command:
+            return "character"
 
     def parse_command(self, command):
         # Add this command to the history
         self.command_history.append(command)
 
-        # By default, none of the intents end the game. The following are ways this
-        # flag can be changed to True.
-        # * Going to a certain place.
-        # * Entering a certain special command
-        # * Picking up a certain object.
-        end_game = False
-        
         # Intents are functions that can be executed
         intent = self.get_player_intent(command)
         if intent == "direction":
-            end_game, narration = self.go_in_direction(command)
+            narration = self.go_in_direction(command)
         elif intent == "redescribe":
             narration = self.game.describe()
         elif intent == "examine":
             narration = self.examine(command)
         elif intent == "take":
-            end_game, narration = self.take(command)
+            narration = self.take(command)
         elif intent == "drop":
             narration = self.drop(command)
         elif intent == "inventory":
             narration = self.check_inventory(command)
-        elif intent == "special":
-            end_game, narration = self.run_special_command(command)
-        elif intent == "sequence":
-            end_game = self.execute_sequence(command)
+        elif intent == "character":
+            narration = self.describe_character(command)
         else:
             narration = "I'm not sure what you want to do.\n"
 
@@ -456,10 +393,6 @@ class Parser:
                 if direction in connection:
                     direction = connection
             if direction in self.game.curr_location.connections:
-                if self.game.curr_location.is_blocked(direction, self.game):
-                    # check to see whether that direction is blocked.
-                    narration += self.game.curr_location.get_block_description(direction)
-                else:
                     # if it's not blocked, then move there 
                     self.game.curr_location = self.game.curr_location.connections[direction]
                     
@@ -477,7 +410,7 @@ class Parser:
                         narration += self.game.describe()
             else:
                 narration += ("You can not reach %s from here.\n" % direction.title())
-        return self.game.curr_location.get_property('end_game'), narration
+        return narration
 
     def check_inventory(self, command):
         """
@@ -526,9 +459,6 @@ class Parser:
         command = command.lower()
         matched_item = False
 
-        # This gets set to True if posession of this object ends the game.
-        end_game = False
-
         # check whether any of the items at this location match the command
         for item_name in self.game.curr_location.items:
             if item_name in command:
@@ -536,8 +466,7 @@ class Parser:
                 if item.get_property('gettable'):
                     self.game.add_to_inventory(item)
                     self.game.curr_location.remove_item(item)
-                    narration = item.take_text
-                    end_game = item.get_property('end_game')                  
+                    narration = item.take_text                
                 else:
                     narration = "You cannot take the %s." % item_name
                 matched_item = True
@@ -554,7 +483,7 @@ class Parser:
         if not matched_item:
             narration = "You cannot find it."
 
-        return end_game, narration
+        return narration
 
     def drop(self, command):
         """
@@ -563,38 +492,42 @@ class Parser:
         narration = ""
         command = command.lower()
         matched_item = False
+
         # check whether any of the items in the inventory match the command
-        if not matched_item:
-            for item_name in self.game.inventory:
-                if item_name in command:
-                    matched_item = True
-                    item = self.game.inventory[item_name]
-                    self.game.curr_location.add_item(item_name, item)
-                    self.game.inventory.pop(item_name)
-                    narration = "You drop the %s." % item_name
-                    break
+        for item_name in self.game.inventory:
+            if item_name in command:
+                matched_item = True
+                item = self.game.inventory[item_name]
+                self.game.curr_location.add_item(item_name, item)
+                self.game.inventory.pop(item_name)
+                narration = "You drop the %s." % item_name
+                break
         # fail
         if not matched_item:
             narration = "You do not have that."
         return narration
 
-    def run_special_command(self, command):
+    def describe_character(self, command):
         """
-        Run a special command associated with one of the items in this location
-        or in the player's inventory.
+        The player wants to get character description.
         """
-        for item in self.game.get_items_in_scope():
-            special_commands = item.get_commands()
-            for special_command in special_commands:
-                if command == special_command.lower():
-                    end_game, narration = item.do_action(special_command, self.game)
-                    return end_game, narration
-        return False, None
+        narration = ""
+        command = command.lower()
+        matched_character = False
 
-    def execute_sequence(self, command):
-        for cmd in command.split(","):
-            cmd = cmd.strip()
-            self.parse_command(cmd)
+        # check whether any of the characters at this location match the command
+        for item_name in self.game.curr_location.items:
+            item = self.game.curr_location.items[item_name]
+            if item.properties["character"] and item_name.lower() in command:
+                narration = item.description               
+                matched_character  = True
+                break
+    
+        # fail
+        if not matched_character:
+            narration = "There is no such person."
+
+        return narration
 
     def get_direction(self, command):
         command = command.lower()
@@ -623,53 +556,6 @@ class Parser:
                 return exit
         return None
 
-
-def check_preconditions(preconditions, game, print_failure_reasons=True):
-    """
-    Checks whether the player has met all of the specified preconditions
-    """
-    all_conditions_met = True
-    for check in preconditions: 
-        if check == "inventory_contains":
-            item = preconditions[check]
-            if not game.is_in_inventory(item):
-                all_conditions_met = False
-                if print_failure_reasons:
-                    print("You don't have the %s" % item.name)
-        if check == "in_location":
-            location = preconditions[check]
-            if not game.curr_location == location:
-                all_conditions_met = False
-                if print_failure_reasons:
-                    print("You aren't in the correct location")
-        if check == "location_has_item":
-            item = preconditions[check]
-            if not item.name in game.curr_location.items:
-                all_conditions_met = False
-                if print_failure_reasons:
-                    print("The %s isn't in this location" % item.name)
-        if check == "linger":
-            stay_time = game.curr_location.stay_time
-            if stay_time <= 3:
-                all_conditions_met = False
-        if check == "location_has_guard":
-            item = preconditions[check]
-            if item.name in game.curr_location.items:
-                all_conditions_met = False
-        if check == "princess_is_not_married":
-            princess = preconditions[check]
-            if princess.properties["married"]:
-                all_conditions_met = False
-        if check == "has_crown":
-            item = preconditions[check]
-            if not game.is_in_inventory(item):
-                all_conditions_met = False
-        if check == "is_wear_crown":
-            item = preconditions[check]
-            if not game.is_in_inventory(item):
-                all_conditions_met = False
-        # todo - add other types of preconditions
-    return all_conditions_met
 
 def build_game(
     locations_filename="game/static/game/data/locations.json",
