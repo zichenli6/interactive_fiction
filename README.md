@@ -1,6 +1,13 @@
 # Interactive Fiction
 
 
+
+<p align="center">
+<img src="fig/ui.png" alt="ui"/>
+Example: The entrance interface to the Harry Potter world
+</p>
+
+
 ## 1. Virtual Environment Set Up
 Set up virtual environment with either Anaconda or Python venv (optional but recommended)
 
