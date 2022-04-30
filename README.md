@@ -22,4 +22,4 @@ Open terminal, activate virtual environment, and run
     python manage.py runserver
 
 ## 6. Play
-Open your favorite browser and go to the local url provided by the terminal in step 4.
+Open your favorite browser and go to the local url provided by the terminal in step 5.
